@@ -1,6 +1,7 @@
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Queue;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.util.*;
 
 public class Excel {
     private Excel(){}
@@ -8,32 +9,75 @@ public class Excel {
     public class csv {
         private csv(){ }
 
-        public static Collection<Collection<String>> read(String fileName){
-            /**
-             * ToDo: Code
-             */
-            return null;
+        public static Queue<ArrayList<String>> read(String fileName){
+            ArrayList<String> rows = new ArrayList<>();
+
+            try{
+                File in = new File(fileName);
+                Scanner myScan = new Scanner(in);
+                while (myScan.hasNextLine()){
+                    rows.add(myScan.nextLine());
+                }
+                myScan.close();
+            } catch (FileNotFoundException e){
+                System.out.println(e.getMessage());
+            }
+
+            Queue<ArrayList<String>> out = new LinkedList<>();
+
+            for (String x : rows){
+                out.offer(new ArrayList<String>(Arrays.asList(x.split(","))));
+            }
+
+            return out;
         }
 
         public static boolean write(String fileName, Collection<Collection<String>> data){
-            /**
-             * ToDo: Code
-             */
-            return false;
+            Queue<String> rows = new LinkedList<>();
+            for (Collection x : data){
+                String row = String.join(",", x);
+                rows.offer(row);
+            }
+
+            try (PrintWriter writer = new PrintWriter(fileName)){
+                for (String y : rows){
+                    writer.write(y);
+                }
+
+                return true;
+            } catch (FileNotFoundException e){
+                System.out.println(e.getMessage());
+
+                return false;
+            }
         }
 
         public static boolean write(String fileName, Collection<String> data, String delimeter){
-            /**
-             * ToDo: Code
-             */
-            return false;
+            Queue<String> rows = new LinkedList<>();
+            for (String x : data){
+                String[] rowList = x.split(delimeter);
+                String row = String.join(",", rowList);
+                rows.offer(row);
+            }
+
+            try (PrintWriter writer = new PrintWriter(fileName)){
+                for (String y : rows){
+                    writer.write(y);
+                }
+
+                return true;
+            } catch (FileNotFoundException e){
+                System.out.println(e.getMessage());
+
+                return false;
+            }
         }
     }
 
     public class xls {
         private xls(){}
 
-        public static Collection<Collection<String>> read(String fileName){
+        public static Queue<ArrayList<String>> read(String fileName){
             /**
              * ToDo: Code
              */
@@ -58,7 +102,7 @@ public class Excel {
     public class xlsx {
         private xlsx(){}
 
-        public static Collection<Collection<String>> read(String fileName){
+        public static Queue<ArrayList<String>> read(String fileName){
             /**
              * ToDo: Code
              */
@@ -87,7 +131,7 @@ public class Excel {
         return null;
     }
 
-    public Collection<Collection<String>> read(String fileName){
+    public static Queue<ArrayList<String>> read(String fileName){
 
         String fileExtension = fileName.split(".")[1];
 
@@ -102,7 +146,7 @@ public class Excel {
         }
     }
 
-    public boolean write(String fileName, Collection<Collection<String>> data){
+    public static boolean write(String fileName, Collection<Collection<String>> data){
 
         String fileExtension = fileName.split(".")[1];
 
@@ -117,7 +161,7 @@ public class Excel {
         }
     }
 
-    public boolean write(String fileName, Collection<String> data, String delimeter){
+    public static boolean write(String fileName, Collection<String> data, String delimeter){
 
         String fileExtension = fileName.split(".")[1];
 
