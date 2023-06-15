@@ -93,22 +93,25 @@ public class Excel {
             /**
              * ToDo: Code
              */
+            try {
+                HSSFWorkbook myExcelBook = new HSSFWorkbook(new FileInputStream(fileName));
+                HSSFSheet myExcelSheet = myExcelBook.getSheet("Birthdays");
+                HSSFRow row = myExcelSheet.getRow(0);
 
-            HSSFWorkbook myExcelBook = new HSSFWorkbook(new FileInputStream(file));
-            HSSFSheet myExcelSheet = myExcelBook.getSheet("Birthdays");
-            HSSFRow row = myExcelSheet.getRow(0);
+                if (row.getCell(0).getCellType() == HSSFCell.CELL_TYPE_STRING) {
+                    String name = row.getCell(0).getStringCellValue();
+                    System.out.println("name : " + name);
+                }
 
-            if(row.getCell(0).getCellType() == HSSFCell.CELL_TYPE_STRING){
-                String name = row.getCell(0).getStringCellValue();
-                System.out.println("name : " + name);
+                if (row.getCell(1).getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
+                    Date birthdate = row.getCell(1).getDateCellValue();
+                    System.out.println("birthdate :" + birthdate);
+                }
+
+                myExcelBook.close();
+            } catch (FileNotFoundException e){
+                System.out.println(e.getMessage());
             }
-
-            if(row.getCell(1).getCellType() == HSSFCell.CELL_TYPE_NUMERIC){
-                Date birthdate = row.getCell(1).getDateCellValue();
-                System.out.println("birthdate :" + birthdate);
-            }
-
-            myExcelBook.close();
 
             return null;
         }
