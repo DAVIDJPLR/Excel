@@ -8,69 +8,75 @@ public class Excel {
     public class csv {
         private csv(){ }
 
-        public Collection<Collection<String>> read(String fileName){
+        public static Collection<Collection<String>> read(String fileName){
             /**
              * ToDo: Code
              */
             return null;
         }
 
-        public void write(String fileName, Collection<Collection<String>> data){
+        public static boolean write(String fileName, Collection<Collection<String>> data){
             /**
              * ToDo: Code
              */
+            return false;
         }
 
-        public void write(String fileName, Collection<String> data, String delimeter){
+        public static boolean write(String fileName, Collection<String> data, String delimeter){
             /**
              * ToDo: Code
              */
+            return false;
         }
     }
 
     public class xls {
         private xls(){}
 
-        public Collection<Collection<String>> read(String fileName){
+        public static Collection<Collection<String>> read(String fileName){
             /**
              * ToDo: Code
              */
             return null;
         }
 
-        public void write(String fileName, Collection<Collection<String>> data){
+        public static boolean write(String fileName, Collection<Collection<String>> data){
             /**
              * ToDo: Code
              */
+            return false;
         }
 
-        public void write(String fileName, Collection<String> data, String delimeter){
+        public static boolean write(String fileName, Collection<String> data, String delimeter){
             /**
              * ToDo: Code
              */
+            return false;
         }
     }
 
     public class xlsx {
         private xlsx(){}
 
-        public Collection<Collection<String>> read(String fileName){
+        public static Collection<Collection<String>> read(String fileName){
             /**
              * ToDo: Code
              */
             return null;
         }
 
-        public void write(String fileName, Collection<Collection<String>> data){
+        public static boolean write(String fileName, Collection<Collection<String>> data){
             /**
              * ToDo: Code
              */
+            return false;
         }
 
-        public void write(String fileName, Collection<String> data, String delimeter){
+        public static boolean write(String fileName, Collection<String> data, String delimeter){
             /**
              * ToDo: Code
              */
+            return false;
         }
     }
 
@@ -81,4 +87,48 @@ public class Excel {
         return null;
     }
 
+    public Collection<Collection<String>> read(String fileName){
+
+        String fileExtension = fileName.split(".")[1];
+
+        if (fileExtension.equalsIgnoreCase("CSV")){
+            return Excel.csv.read(fileName);
+        } else if (fileExtension.equalsIgnoreCase("XLS")){
+            return Excel.xls.read(fileName);
+        } else if (fileExtension.equalsIgnoreCase("XLSX")){
+            return Excel.xlsx.read(fileName);
+        } else {
+            return null;
+        }
+    }
+
+    public boolean write(String fileName, Collection<Collection<String>> data){
+
+        String fileExtension = fileName.split(".")[1];
+
+        if (fileExtension.equalsIgnoreCase("CSV")){
+            return Excel.csv.write(fileName, data);
+        } else if (fileExtension.equalsIgnoreCase("XLS")){
+            return Excel.xls.write(fileName, data);
+        } else if (fileExtension.equalsIgnoreCase("XLSX")){
+            return Excel.xlsx.write(fileName, data);
+        } else {
+            return false;
+        }
+    }
+
+    public boolean write(String fileName, Collection<String> data, String delimeter){
+
+        String fileExtension = fileName.split(".")[1];
+
+        if (fileExtension.equalsIgnoreCase("CSV")){
+            return Excel.csv.write(fileName, data, delimeter);
+        } else if (fileExtension.equalsIgnoreCase("XLS")){
+            return Excel.xls.write(fileName, data, delimeter);
+        } else if (fileExtension.equalsIgnoreCase("XLSX")){
+            return Excel.xlsx.write(fileName, data, delimeter);
+        } else {
+            return false;
+        }
+    }
 }
