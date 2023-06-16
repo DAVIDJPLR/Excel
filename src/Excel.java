@@ -1,19 +1,15 @@
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
-import java.util.*;
-
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.DataFormat;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.streaming.SXSSFSheet;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import java.io.*;
+import java.util.*;
 
 public class Excel {
     private Excel(){}
@@ -65,24 +61,7 @@ public class Excel {
         }
 
         public static boolean write(String fileName, Collection<String> data, String delimeter){
-            Queue<String> rows = new LinkedList<>();
-            for (String x : data){
-                String[] rowList = x.split(delimeter);
-                String row = String.join(",", rowList);
-                rows.offer(row);
-            }
-
-            try (PrintWriter writer = new PrintWriter(fileName)){
-                for (String y : rows){
-                    writer.write(y);
-                }
-
-                return true;
-            } catch (FileNotFoundException e){
-                System.out.println(e.getMessage());
-
-                return false;
-            }
+            return Excel.csv.write(fileName, convert(data, delimeter));
         }
     }
 
@@ -90,44 +69,81 @@ public class Excel {
         private xls(){}
 
         public static Queue<ArrayList<String>> read(String fileName){
-            /**
-             * ToDo: Code
-             */
-            try {
-                HSSFWorkbook myExcelBook = new HSSFWorkbook(new FileInputStream(fileName));
-                HSSFSheet myExcelSheet = myExcelBook.getSheet("Birthdays");
-                HSSFRow row = myExcelSheet.getRow(0);
 
-                if (row.getCell(0).getCellType() == HSSFCell.CELL_TYPE_STRING) {
-                    String name = row.getCell(0).getStringCellValue();
-                    System.out.println("name : " + name);
+
+            Queue<ArrayList<String>> out = new LinkedList<>();
+
+            try{
+                FileInputStream file = new FileInputStream(fileName);
+
+                HSSFWorkbook workbook = new HSSFWorkbook(file);
+
+                HSSFSheet sheet = workbook.getSheetAt(0);
+
+                Iterator<Row> rowIterator = sheet.iterator();
+                while(rowIterator.hasNext()){
+                    Row row = rowIterator.next();
+                    ArrayList<String> dataRow = new ArrayList<>();
+
+                    Iterator<Cell> cellIterator = row.cellIterator();
+                    while (cellIterator.hasNext()){
+                        Cell cell = cellIterator.next();
+
+
+                        switch (cell.getCellType())
+                        {
+                            case NUMERIC:
+                                dataRow.add(String.valueOf(cell.getNumericCellValue()));
+                                break;
+                            case STRING:
+                                dataRow.add(cell.getStringCellValue());
+                                break;
+                        }
+                    }
+                    out.offer(dataRow);
                 }
-
-                if (row.getCell(1).getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
-                    Date birthdate = row.getCell(1).getDateCellValue();
-                    System.out.println("birthdate :" + birthdate);
-                }
-
-                myExcelBook.close();
-            } catch (FileNotFoundException e){
+                file.close();
+                return out;
+            } catch (FileNotFoundException e) {
                 System.out.println(e.getMessage());
+                return null;
+            } catch (IOException e) {
+                System.out.println(e.getMessage());
+                return null;
             }
-
-            return null;
         }
 
         public static boolean write(String fileName, Collection<Collection<String>> data){
-            /**
-             * ToDo: Code
-             */
-            return false;
+
+            HSSFWorkbook workbook = new HSSFWorkbook();
+
+            HSSFSheet sheet = workbook.createSheet((fileName.split("\\."))[0]);
+
+            int rownum = 0;
+            for (Collection dataRow : data){
+                Row row = sheet.createRow(rownum++);
+                int cellnum = 0;
+                for (Object str : dataRow){
+                    Cell cell = row.createCell(cellnum++);
+                    cell.setCellValue((String)str);
+                }
+            }
+            try{
+                FileOutputStream out = new FileOutputStream(fileName);
+                workbook.write(out);
+                out.close();
+                return true;
+            } catch (FileNotFoundException e) {
+                System.out.println(e.getMessage());
+                return false;
+            } catch (IOException e) {
+                System.out.println(e.getMessage());
+                return false;
+            }
         }
 
         public static boolean write(String fileName, Collection<String> data, String delimeter){
-            /**
-             * ToDo: Code
-             */
-            return false;
+            return Excel.xls.write(fileName, convert(data, delimeter));
         }
     }
 
@@ -135,32 +151,93 @@ public class Excel {
         private xlsx(){}
 
         public static Queue<ArrayList<String>> read(String fileName){
-            /**
-             * ToDo: Code
-             */
-            return null;
+
+            Queue<ArrayList<String>> out = new LinkedList<>();
+
+            try{
+                FileInputStream file = new FileInputStream(fileName);
+
+                XSSFWorkbook workbook = new XSSFWorkbook(file);
+
+                XSSFSheet sheet = workbook.getSheetAt(0);
+
+                Iterator<Row> rowIterator = sheet.iterator();
+                while(rowIterator.hasNext()){
+                    Row row = rowIterator.next();
+                    ArrayList<String> dataRow = new ArrayList<>();
+
+                    Iterator<Cell> cellIterator = row.cellIterator();
+                    while (cellIterator.hasNext()){
+                        Cell cell = cellIterator.next();
+
+
+                        switch (cell.getCellType())
+                        {
+                            case NUMERIC:
+                                dataRow.add(String.valueOf(cell.getNumericCellValue()));
+                                break;
+                            case STRING:
+                                dataRow.add(cell.getStringCellValue());
+                                break;
+                        }
+                    }
+                    out.offer(dataRow);
+                }
+                file.close();
+                return out;
+            } catch (FileNotFoundException e) {
+                System.out.println(e.getMessage());
+                return null;
+            } catch (IOException e) {
+                System.out.println(e.getMessage());
+                return null;
+            }
         }
 
         public static boolean write(String fileName, Collection<Collection<String>> data){
-            /**
-             * ToDo: Code
-             */
-            return false;
+
+            SXSSFWorkbook workbook = new SXSSFWorkbook();
+
+            SXSSFSheet sheet = workbook.createSheet((fileName.split("\\."))[0]);
+
+            int rownum = 0;
+            for (Collection dataRow : data){
+                Row row = sheet.createRow(rownum++);
+                int cellnum = 0;
+                for (Object str : dataRow){
+                    Cell cell = row.createCell(cellnum++);
+                    cell.setCellValue((String)str);
+                }
+            }
+            try{
+                FileOutputStream out = new FileOutputStream(fileName);
+                workbook.write(out);
+                out.close();
+                return true;
+            } catch (FileNotFoundException e) {
+                System.out.println(e.getMessage());
+                return false;
+            } catch (IOException e) {
+                System.out.println(e.getMessage());
+                return false;
+            }
         }
 
-        public static boolean write(String fileName, Collection<String> data, String delimeter){
-            /**
-             * ToDo: Code
-             */
-            return false;
+        public static boolean write(String fileName, Collection<String> data, String delimeter) {
+            return Excel.xlsx.write(fileName, convert(data, delimeter));
         }
     }
 
-    private Collection<Collection<String>> convert(Collection<String> data, String delimeter){
-        /**
-         * ToDo: Code
-         */
-        return null;
+    private static Collection<Collection<String>> convert(Collection<String> data, String delimeter){
+
+        ArrayList<Collection<String>> out = new ArrayList<>();
+
+        for (String x : data){
+            List<String> row =  Arrays.asList(x.split(delimeter));
+            out.add(row);
+        }
+
+        return out;
     }
 
     public static Queue<ArrayList<String>> read(String fileName){
