@@ -8,12 +8,16 @@ import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import javax.swing.*;
 import java.io.*;
 import java.util.*;
 
+import static java.lang.System.exit;
 import static org.apache.poi.ss.usermodel.CellType.STRING;
 
 public class Excel {
+
+    public static final String supportedFilesTypes = "xls, xlsx, and csv files";
     private Excel(){}
 
     public class csv {
@@ -360,6 +364,8 @@ public class Excel {
         } else if (fileExtension.equalsIgnoreCase("XLSX")){
             return Excel.xlsx.read(fileName);
         } else {
+            JOptionPane.showMessageDialog(new JPanel(), "This file type is not currently supported.\nThe supported file types are currently:\n" + supportedFilesTypes);
+            exit(1);
             return null;
         }
     }
@@ -375,6 +381,8 @@ public class Excel {
         } else if (fileExtension.equalsIgnoreCase("XLSX")){
             return Excel.xlsx.write(fileName, data);
         } else {
+            JOptionPane.showMessageDialog(new JPanel(), "This file type is not currently supported.\nThe supported file types are currently:\n" + supportedFilesTypes);
+            exit(1);
             return false;
         }
     }
@@ -389,6 +397,8 @@ public class Excel {
         } else if (fileExtension.equalsIgnoreCase("XLSX")){
             return Excel.xlsx.write(fileName, data, header);
         } else {
+            JOptionPane.showMessageDialog(new JPanel(), "This file type is not currently supported.\nThe supported file types are currently:\n" + supportedFilesTypes);
+            exit(1);
             return false;
         }
     }
@@ -404,6 +414,8 @@ public class Excel {
         } else if (fileExtension.equalsIgnoreCase("XLSX")){
             return Excel.xlsx.write(fileName, data, delimeter);
         } else {
+            JOptionPane.showMessageDialog(new JPanel(), "This file type is not currently supported.\nThe supported file types are currently:\n" + supportedFilesTypes);
+            exit(1);
             return false;
         }
     }
@@ -419,6 +431,8 @@ public class Excel {
         } else if (fileExtension.equalsIgnoreCase("XLSX")){
             return Excel.xlsx.write(fileName, data, delimeter, header);
         } else {
+            JOptionPane.showMessageDialog(new JPanel(), "This file type is not currently supported.\nThe supported file types are currently:\n" + supportedFilesTypes);
+            exit(1);
             return false;
         }
     }
