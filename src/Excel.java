@@ -49,13 +49,11 @@ public class Excel {
 
             try (PrintWriter writer = new PrintWriter(fileName)){
                 for (String y : rows){
-                    writer.write(y);
+                    writer.write(y + "\n");
                 }
-
                 return true;
             } catch (FileNotFoundException e){
                 System.out.println(e.getMessage());
-
                 return false;
             }
         }
@@ -86,9 +84,9 @@ public class Excel {
                     ArrayList<String> dataRow = new ArrayList<>();
 
                     Iterator<Cell> cellIterator = row.cellIterator();
-                    while (cellIterator.hasNext()){
-                        Cell cell = cellIterator.next();
 
+                    for(int x=0; x<row.getLastCellNum(); x++){
+                        Cell cell = row.getCell(x, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
 
                         switch (cell.getCellType())
                         {
@@ -97,6 +95,9 @@ public class Excel {
                                 break;
                             case STRING:
                                 dataRow.add(cell.getStringCellValue());
+                                break;
+                            default:
+                                dataRow.add("");
                                 break;
                         }
                     }
@@ -120,12 +121,12 @@ public class Excel {
             HSSFSheet sheet = workbook.createSheet((fileName.split("\\."))[0]);
 
             int rownum = 0;
-            for (Collection dataRow : data){
+            for (Collection<String> dataRow : data){
                 Row row = sheet.createRow(rownum++);
                 int cellnum = 0;
-                for (Object str : dataRow){
+                for (String str : dataRow){
                     Cell cell = row.createCell(cellnum++);
-                    cell.setCellValue((String)str);
+                    cell.setCellValue(str);
                 }
             }
             try{
@@ -167,9 +168,8 @@ public class Excel {
                     ArrayList<String> dataRow = new ArrayList<>();
 
                     Iterator<Cell> cellIterator = row.cellIterator();
-                    while (cellIterator.hasNext()){
-                        Cell cell = cellIterator.next();
-
+                    for(int x=0; x<row.getLastCellNum(); x++){
+                        Cell cell = row.getCell(x, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
 
                         switch (cell.getCellType())
                         {
@@ -178,6 +178,9 @@ public class Excel {
                                 break;
                             case STRING:
                                 dataRow.add(cell.getStringCellValue());
+                                break;
+                            default:
+                                dataRow.add("");
                                 break;
                         }
                     }
@@ -201,12 +204,12 @@ public class Excel {
             SXSSFSheet sheet = workbook.createSheet((fileName.split("\\."))[0]);
 
             int rownum = 0;
-            for (Collection dataRow : data){
+            for (Collection<String> dataRow : data){
                 Row row = sheet.createRow(rownum++);
                 int cellnum = 0;
-                for (Object str : dataRow){
+                for (String str : dataRow){
                     Cell cell = row.createCell(cellnum++);
-                    cell.setCellValue((String)str);
+                    cell.setCellValue(str);
                 }
             }
             try{
@@ -242,7 +245,7 @@ public class Excel {
 
     public static Queue<ArrayList<String>> read(String fileName){
 
-        String fileExtension = fileName.split(".")[1];
+        String fileExtension = fileName.split("\\.")[1];
 
         if (fileExtension.equalsIgnoreCase("CSV")){
             return Excel.csv.read(fileName);
@@ -257,7 +260,7 @@ public class Excel {
 
     public static boolean write(String fileName, Collection<Collection<String>> data){
 
-        String fileExtension = fileName.split(".")[1];
+        String fileExtension = fileName.split("\\.")[1];
 
         if (fileExtension.equalsIgnoreCase("CSV")){
             return Excel.csv.write(fileName, data);
