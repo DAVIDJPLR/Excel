@@ -11,6 +11,8 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.io.*;
 import java.util.*;
 
+import static org.apache.poi.ss.usermodel.CellType.STRING;
+
 public class Excel {
     private Excel(){}
 
@@ -91,7 +93,8 @@ public class Excel {
                         switch (cell.getCellType())
                         {
                             case NUMERIC:
-                                dataRow.add(String.valueOf(cell.getNumericCellValue()));
+                                cell.setCellType(STRING);;
+                                dataRow.add(cell.getStringCellValue());
                                 break;
                             case STRING:
                                 dataRow.add(cell.getStringCellValue());
@@ -174,7 +177,8 @@ public class Excel {
                         switch (cell.getCellType())
                         {
                             case NUMERIC:
-                                dataRow.add(String.valueOf(cell.getNumericCellValue()));
+                                cell.setCellType(STRING);;
+                                dataRow.add(cell.getStringCellValue());
                                 break;
                             case STRING:
                                 dataRow.add(cell.getStringCellValue());
