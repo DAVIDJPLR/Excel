@@ -60,8 +60,32 @@ public class Excel {
             }
         }
 
+        public static boolean write(String fileName, Collection<Collection<String>> data, ArrayList<String> header){
+            String head = String.join(",", header);
+            Queue<String> rows = new LinkedList<>();
+            for (Collection x : data){
+                String row = String.join(",", x);
+                rows.offer(row);
+            }
+
+            try (PrintWriter writer = new PrintWriter(fileName)){
+                writer.write(head + "\n");
+                for (String y : rows){
+                    writer.write(y + "\n");
+                }
+                return true;
+            } catch (FileNotFoundException e){
+                System.out.println(e.getMessage());
+                return false;
+            }
+        }
+
         public static boolean write(String fileName, Collection<String> data, String delimeter){
             return Excel.csv.write(fileName, convert(data, delimeter));
+        }
+
+        public static boolean write(String fileName, Collection<String> data, String delimeter, ArrayList<String> header){
+            return Excel.csv.write(fileName, convert(data, delimeter), header);
         }
     }
 
@@ -146,8 +170,47 @@ public class Excel {
             }
         }
 
+        public static boolean write(String fileName, Collection<Collection<String>> data, ArrayList<String> header){
+            HSSFWorkbook workbook = new HSSFWorkbook();
+
+            HSSFSheet sheet = workbook.createSheet((fileName.split("\\."))[0]);
+
+            Row row = sheet.createRow(1);
+            int cellnum = 0;
+            for (String str : header){
+                Cell cell = row.createCell(cellnum++);
+                cell.setCellValue(str);
+            }
+
+            int rownum = 1;
+            for (Collection<String> dataRow : data){
+                row = sheet.createRow(rownum++);
+                cellnum = 0;
+                for (String str : dataRow){
+                    Cell cell = row.createCell(cellnum++);
+                    cell.setCellValue(str);
+                }
+            }
+            try{
+                FileOutputStream out = new FileOutputStream(fileName);
+                workbook.write(out);
+                out.close();
+                return true;
+            } catch (FileNotFoundException e) {
+                System.out.println(e.getMessage());
+                return false;
+            } catch (IOException e) {
+                System.out.println(e.getMessage());
+                return false;
+            }
+        }
+
         public static boolean write(String fileName, Collection<String> data, String delimeter){
             return Excel.xls.write(fileName, convert(data, delimeter));
+        }
+
+        public static boolean write(String fileName, Collection<String> data, String delimeter, ArrayList<String> header){
+            return Excel.xls.write(fileName, convert(data, delimeter), header);
         }
     }
 
@@ -230,8 +293,47 @@ public class Excel {
             }
         }
 
+        public static boolean write(String fileName, Collection<Collection<String>> data, ArrayList<String> header){
+            SXSSFWorkbook workbook = new SXSSFWorkbook();
+
+            SXSSFSheet sheet = workbook.createSheet((fileName.split("\\."))[0]);
+
+            Row row = sheet.createRow(1);
+            int cellnum = 0;
+            for (String str : header){
+                Cell cell = row.createCell(cellnum++);
+                cell.setCellValue(str);
+            }
+
+            int rownum = 1;
+            for (Collection<String> dataRow : data){
+                row = sheet.createRow(rownum++);
+                cellnum = 0;
+                for (String str : dataRow){
+                    Cell cell = row.createCell(cellnum++);
+                    cell.setCellValue(str);
+                }
+            }
+            try{
+                FileOutputStream out = new FileOutputStream(fileName);
+                workbook.write(out);
+                out.close();
+                return true;
+            } catch (FileNotFoundException e) {
+                System.out.println(e.getMessage());
+                return false;
+            } catch (IOException e) {
+                System.out.println(e.getMessage());
+                return false;
+            }
+        }
+
         public static boolean write(String fileName, Collection<String> data, String delimeter) {
             return Excel.xlsx.write(fileName, convert(data, delimeter));
+        }
+
+        public static boolean write(String fileName, Collection<String> data, String delimiter, ArrayList<String> header){
+            return Excel.xlsx.write(fileName, convert(data, delimiter), header);
         }
     }
 
@@ -277,6 +379,20 @@ public class Excel {
         }
     }
 
+    public static boolean write(String fileName, Collection<Collection<String>> data, ArrayList<String> header){
+        String fileExtension = fileName.split("\\.")[1];
+
+        if (fileExtension.equalsIgnoreCase("CSV")){
+            return Excel.csv.write(fileName, data, header);
+        } else if (fileExtension.equalsIgnoreCase("XLS")){
+            return Excel.xls.write(fileName, data, header);
+        } else if (fileExtension.equalsIgnoreCase("XLSX")){
+            return Excel.xlsx.write(fileName, data, header);
+        } else {
+            return false;
+        }
+    }
+
     public static boolean write(String fileName, Collection<String> data, String delimeter){
 
         String fileExtension = fileName.split(".")[1];
@@ -287,6 +403,21 @@ public class Excel {
             return Excel.xls.write(fileName, data, delimeter);
         } else if (fileExtension.equalsIgnoreCase("XLSX")){
             return Excel.xlsx.write(fileName, data, delimeter);
+        } else {
+            return false;
+        }
+    }
+
+    public static boolean write(String fileName, Collection<String> data, String delimeter, ArrayList<String> header){
+
+        String fileExtension = fileName.split(".")[1];
+
+        if (fileExtension.equalsIgnoreCase("CSV")){
+            return Excel.csv.write(fileName, data, delimeter, header);
+        } else if (fileExtension.equalsIgnoreCase("XLS")){
+            return Excel.xls.write(fileName, data, delimeter, header);
+        } else if (fileExtension.equalsIgnoreCase("XLSX")){
+            return Excel.xlsx.write(fileName, data, delimeter, header);
         } else {
             return false;
         }
