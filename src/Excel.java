@@ -179,7 +179,7 @@ public class Excel {
 
             HSSFSheet sheet = workbook.createSheet((fileName.split("\\."))[0]);
 
-            Row row = sheet.createRow(1);
+            Row row = sheet.createRow(0);
             int cellnum = 0;
             for (String str : header){
                 Cell cell = row.createCell(cellnum++);
@@ -302,7 +302,7 @@ public class Excel {
 
             SXSSFSheet sheet = workbook.createSheet((fileName.split("\\."))[0]);
 
-            Row row = sheet.createRow(1);
+            Row row = sheet.createRow(0);
             int cellnum = 0;
             for (String str : header){
                 Cell cell = row.createCell(cellnum++);
