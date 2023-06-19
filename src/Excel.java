@@ -149,7 +149,8 @@ public class Excel {
 
             HSSFWorkbook workbook = new HSSFWorkbook();
 
-            HSSFSheet sheet = workbook.createSheet((fileName.split("\\."))[0]);
+            String[] sheetName = fileName.split("\\\\");
+            HSSFSheet sheet = workbook.createSheet(((sheetName[sheetName.length-1]).split("\\."))[0]);
 
             int rownum = 0;
             for (Collection<String> dataRow : data){
@@ -177,7 +178,8 @@ public class Excel {
         public static boolean write(String fileName, Collection<Collection<String>> data, ArrayList<String> header){
             HSSFWorkbook workbook = new HSSFWorkbook();
 
-            HSSFSheet sheet = workbook.createSheet((fileName.split("\\."))[0]);
+            String[] sheetName = fileName.split("\\\\");
+            HSSFSheet sheet = workbook.createSheet(((sheetName[sheetName.length-1]).split("\\."))[0]);
 
             Row row = sheet.createRow(0);
             int cellnum = 0;
@@ -272,7 +274,8 @@ public class Excel {
 
             SXSSFWorkbook workbook = new SXSSFWorkbook();
 
-            SXSSFSheet sheet = workbook.createSheet((fileName.split("\\."))[0]);
+            String[] sheetName = fileName.split("\\\\");
+            SXSSFSheet sheet = workbook.createSheet(((sheetName[sheetName.length-1]).split("\\."))[0]);
 
             int rownum = 0;
             for (Collection<String> dataRow : data){
@@ -300,7 +303,8 @@ public class Excel {
         public static boolean write(String fileName, Collection<Collection<String>> data, ArrayList<String> header){
             SXSSFWorkbook workbook = new SXSSFWorkbook();
 
-            SXSSFSheet sheet = workbook.createSheet((fileName.split("\\."))[0]);
+            String[] sheetName = fileName.split("\\\\");
+            SXSSFSheet sheet = workbook.createSheet(((sheetName[sheetName.length-1]).split("\\."))[0]);
 
             Row row = sheet.createRow(0);
             int cellnum = 0;
