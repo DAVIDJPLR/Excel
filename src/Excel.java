@@ -17,7 +17,7 @@ import static org.apache.poi.ss.usermodel.CellType.STRING;
 
 public class Excel {
 
-    public static final String supportedFilesTypes = "xls, xlsx, and csv files";
+    public static final ArrayList<String> supportedFilesTypes = new ArrayList(Arrays.asList(new String[]{"xls", "xlsx", "csv"}));
     private Excel(){}
 
     public class csv {
